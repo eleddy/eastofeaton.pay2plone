@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<componentregistry>
+  <utilities>
+    <utility
+      interface="eastofeaton.pay2plone.interfaces.IPay2PloneUtility"
+      factory="eastofeaton.pay2plone.utility.Pay2PloneUtility"
+      />
+  </utilities>
+</componentregistry>
