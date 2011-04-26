@@ -1,0 +1,31 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:five="http://namespaces.zope.org/five"
+   xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+   i18n_domain="plone"
+   >
+
+  <genericsetup:importStep
+    name="sitetemplateregistry"
+    title="Pay2Plone Site Template Registry"
+    description="Import Pay2Plone Site Templates"
+    handler="eastofeaton.pay2plone.exportimport.registry.importSiteTemplateRegistry">
+   <depends name="componentregistry"/>
+  </genericsetup:importStep>
+  
+
+  <genericsetup:exportStep
+    name="sitetemplateregistry"
+    title="Pay2Plone Site Template Registry"
+    description="Export Pay2Plone Site Templates2"
+    handler="eastofeaton.pay2plone.exportimport.registry.exportSiteTemplateRegistry"
+  />
+
+  <adapter
+    factory=".registry.SiteTemplateRegistryXMLAdapter"
+    provides="Products.GenericSetup.interfaces.IBody"
+    for="eastofeaton.pay2plone.interfaces.ISiteTemplateRegistry
+         Products.GenericSetup.interfaces.ISetupEnviron"
+  />
+
+</configure>

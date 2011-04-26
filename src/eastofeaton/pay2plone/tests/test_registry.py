@@ -9,7 +9,7 @@ from zope.container.interfaces import InvalidItemType
 
 from eastofeaton.pay2plone.interfaces import ISiteTemplateRegistry
 from eastofeaton.pay2plone.interfaces import ISiteTemplate
-from eastofeaton.pay2plone.sitetemplate import SiteTemplate
+from eastofeaton.pay2plone.sitetemplate import SimpleSiteTemplate
 
 from eastofeaton.pay2plone.testing import\
     EASTOFEATON_PAY2PLONE_INTEGRATION_TESTING
@@ -38,11 +38,12 @@ class TestSiteTemplateRegistry(unittest.TestCase):
         """ insert a template into the registry through the backdoor
             use the container api to do it.
         """
-        sample_template = SiteTemplate('sampleid',
-                                       'My Name',
-                                       'A test template',
-                                       10.00,
-                                       ['productA', 'productB', 'productC'])
+        sample_template = SimpleSiteTemplate(
+            'sampleid',
+            'My Name',
+            'A test template',
+            10.00,
+            ['productA', 'productB', 'productC'])
         self.registry['sampleid'] = sample_template
 
     def test_registry_interface(self):
@@ -59,11 +60,12 @@ class TestSiteTemplateRegistry(unittest.TestCase):
     def test_add_template(self):
         """ verify that we can add a template to the utility and get it back
         """
-        test_template = SiteTemplate('myid',
-                                     'My Name',
-                                     'A test template',
-                                     5.00,
-                                     ['produc1', 'product2', 'product3'])
+        test_template = SimpleSiteTemplate(
+            'myid',
+            'My Name',
+            'A test template',
+            5.00,
+            ['produc1', 'product2', 'product3'])
         # there should be no templates in the registry now:
         self.assertEquals(len(self.registry), 0,
                           "unexpected template present in registry")

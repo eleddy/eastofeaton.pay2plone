@@ -5,7 +5,7 @@ from zope.interface import implements
 from eastofeaton.pay2plone.interfaces import ISiteTemplate
 
 
-class SiteTemplate(Persistent):
+class SimpleSiteTemplate(Persistent):
     """ a template for a purchaseable site
     """
     implements(ISiteTemplate)

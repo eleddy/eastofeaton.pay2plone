@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<object>
+ <simpletemplate id="foo" 
+                 name="I am the foo template" 
+                 description="this is my description"
+                 price="5.00"
+                 >
+  <product profile="eastofeaton.pay2plone:default" />
+ </simpletemplate>
+</object>
