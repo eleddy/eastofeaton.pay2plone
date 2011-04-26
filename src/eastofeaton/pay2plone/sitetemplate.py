@@ -10,13 +10,24 @@ class SiteTemplate(Persistent):
     """
     implements(ISiteTemplate)
     
+    id = u''
     name = u''
     description = None
-    price = 0.0
+    _price = 0.0
     products = None
     
-    def __init__(self, name, description, price, products=[]):
+    def __init__(self, id, name, description, price, products=[]):
+        try:
+            class test(object): __slots__ = [id]
+        except TypeError:
+            raise ValueError('id must be a valid python identifier')
+        else:
+            self.id = id
         self.name = name
         self.description = description
-        self.price = price
+        self._price = price
         self.products = frozenset(products)
+    
+    @property
+    def price(self):
+        return self._price

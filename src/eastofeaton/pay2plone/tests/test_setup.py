@@ -8,6 +8,7 @@ from zope.component import queryUtility
 from Products.CMFCore.utils import getToolByName
 
 from eastofeaton.pay2plone.interfaces import IPay2PloneUtility
+from eastofeaton.pay2plone.interfaces import ISiteTemplateRegistry
 from eastofeaton.pay2plone.testing import\
     EASTOFEATON_PAY2PLONE_INTEGRATION_TESTING
 
@@ -20,7 +21,6 @@ class TestSetup(unittest.TestCase):
         self.app = self.layer['app']
         self.portal = self.layer['portal']
         self.qi_tool = getToolByName(self.portal, 'portal_quickinstaller')
-        self.cp = getToolByName(self.portal, 'portal_controlpanel')
 
     def test_product_installed(self):
         """ validate that our product GS profile has been run and installed
@@ -30,8 +30,13 @@ class TestSetup(unittest.TestCase):
         self.assertTrue(pid in installed,
                         "Package appears not to be installed")
 
-    def test_utility_available(self):
-        """ validate that the utility exists and can be found
-        """
-        utility = queryUtility(IPay2PloneUtility)
-        self.assert_(utility)
+    # def test_utility_available(self):
+    #     """ validate that the utility exists and can be found
+    #     """
+    #     import pdb; pdb.set_trace( )
+    #     utility = queryUtility(IPay2PloneUtility, None)
+    #     self.assertTrue(utility is not None)
+    
+    def test_template_registry_available(self):
+        t_registry = queryUtility(ISiteTemplateRegistry, None)
+        self.assertTrue(t_registry is not None)

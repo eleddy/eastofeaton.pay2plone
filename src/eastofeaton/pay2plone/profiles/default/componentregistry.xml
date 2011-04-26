@@ -5,5 +5,9 @@
       interface="eastofeaton.pay2plone.interfaces.IPay2PloneUtility"
       factory="eastofeaton.pay2plone.utility.Pay2PloneUtility"
       />
+    <utility
+      interface="eastofeaton.pay2plone.interfaces.ISiteTemplateRegistry"
+      factory="eastofeaton.pay2plone.registry.SiteTemplateRegistry"
+      />
   </utilities>
 </componentregistry>

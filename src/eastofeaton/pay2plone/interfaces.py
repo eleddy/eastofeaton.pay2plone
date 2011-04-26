@@ -1,4 +1,6 @@
 from zope.interface import Interface
+from zope.container.interfaces import IOrderedContainer
+from zope.container.constraints import contains
 from zope.schema import TextLine
 from zope.schema import Text
 from zope.schema import Decimal
@@ -11,6 +13,9 @@ from zope.schema.vocabulary import SimpleVocabulary
 class ISiteTemplate(Interface):
     """ describes the template for creating a site
     """
+    id = TextLine(title=u'Template ID',
+                  description=u'ID must be a valid python identifier',
+                  required=True)
     name = TextLine(title=u'Template Name',
                     required=True)
     description = Text(title=u"Template Description",
@@ -30,6 +35,28 @@ class ISiteTemplate(Interface):
                             )),
                          ),
                          default=frozenset(['foo',]))
+
+
+class ISiteTemplateRegistry(IOrderedContainer):
+    """ registry for site templates
+    """
+    contains("eastofeaton.pay2plone.interfaces.ISiteTemplate")
+
+    def add_template(template):
+        """ add a new site template to the template registry
+        """
+
+    def remove_template(id):
+        """ remove a site template from the template registry
+        """
+
+    def list_templates():
+        """ return a list of all templates in the template registry
+        """
+
+    def get_template_by_id(name):
+        """ return the template with name 'name' from the template registry
+        """
 
 
 class IPay2PloneUtility(Interface):
