@@ -9,13 +9,13 @@ class SimpleSiteTemplate(Persistent):
     """ a template for a purchaseable site
     """
     implements(ISiteTemplate)
-    
+
     id = u''
     name = u''
     description = None
-    _price = 0.0
+    template_price = 0.0
     products = None
-    
+
     def __init__(self, id, name, description, price, products=[]):
         try:
             class test(object): __slots__ = [id]
@@ -25,9 +25,9 @@ class SimpleSiteTemplate(Persistent):
             self.id = id
         self.name = name
         self.description = description
-        self._price = price
+        self.template_price = price
         self.products = frozenset(products)
-    
+
     @property
     def price(self):
-        return self._price
+        return self.template_price

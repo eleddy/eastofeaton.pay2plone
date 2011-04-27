@@ -13,6 +13,8 @@ class SiteTemplateRegistry(OrderedContainer):
     def add_template(self, template):
         tid = template.id
         checkObject(self, tid, template)
+        if tid in self:
+            del self[tid]
         self[tid] = template
 
     def remove_template(self, tid):

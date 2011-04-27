@@ -34,9 +34,9 @@ class TestSetup(unittest.TestCase):
     #     """ validate that the utility exists and can be found
     #     """
     #     import pdb; pdb.set_trace( )
-    #     utility = queryUtility(IPay2PloneUtility, None)
+    #     utility = queryUtility(IPay2PloneUtility)
     #     self.assertTrue(utility is not None)
     
     def test_template_registry_available(self):
-        t_registry = queryUtility(ISiteTemplateRegistry, None)
+        t_registry = queryUtility(ISiteTemplateRegistry, default=None)
         self.assertTrue(t_registry is not None)
