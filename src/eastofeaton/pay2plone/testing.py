@@ -32,8 +32,6 @@ EASTOFEATON_PAY2PLONE_FUNCTIONAL_TESTING = \
                       name="EastofeatonPay2Plone:Functional")
 
 
-
-
 class Pay2PloneZCMLLayer(ExportImportZCMLLayer):
 
     @classmethod
