@@ -17,5 +17,13 @@
       description="Installs the eastofeaton.pay2plone package"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
-  
+
+  <genericsetup:registerProfile
+      name="sample"
+      title="samples for eastofeaton.pay2plone"
+      directory="profiles/sample"
+      description="Provides some sample stuff for purposes of contruction"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
 </configure>

@@ -90,7 +90,6 @@ class TestSiteTemplateRegsitryAdapter(BodyAdapterTestCase, unittest.TestCase):
         # self.assertEqual(adapted.body, self._BODY)
 
     def _verifyImport(self, obj):
-        import pdb; pdb.set_trace( )
         t_list = obj.list_templates()
         self.assertEqual(len(t_list), 1)
         self.assertTrue(u'foo' in t_list)
