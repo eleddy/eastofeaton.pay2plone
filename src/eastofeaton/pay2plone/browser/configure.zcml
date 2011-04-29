@@ -1,0 +1,40 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:five="http://namespaces.zope.org/five">
+
+  <!-- pick a site, press 'pay' -->
+  <browser:page
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      name="pay2plone"
+      class="eastofeaton.pay2plone.browser.listing.TemplateListings"
+      template="template_listing.pt"
+      permission="zope2.View"
+      />
+  
+  <!-- back from paypal, success or failure -->
+  <browser:page
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      name="pay2plone_callback"
+      class="eastofeaton.pay2plone.browser.callback.PaymentCallback"
+      template="payment_callback.pt"
+      permission="zope2.View"
+      />
+  
+  <!-- on success, forward to here to start site installation -->
+  <browser:page
+      for="OFS.interfaces.IApplication"
+      name="pay2plone_addsite"
+      class="eastofeaton.pay2plone.browser.admin.AddSite"
+      template="addsite.pt"
+      permission="zope2.View"
+      />
+  
+  <!-- after site is successfully installed, go here to be forwarded to new site -->
+  <browser:page
+      for="OFS.interfaces.IApplication"
+      name="pay2plone_finishsite"
+      class="eastofeaton.pay2plone.browser.admin.FinishSite"
+      permission="zope2.View"
+      />
+
+</configure>
