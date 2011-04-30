@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<object>
+  <simpletemplate id="template1" 
+                  name="FormGen Template"
+                  description="Includes the venerable package PloneFormGen"
+                  price="10.00">
+    <product profile="Products.PloneFormGen:default"/>
+  </simpletemplate>
+</object>

@@ -33,5 +33,31 @@
       </div>
   </metal:content-description>
   
+  <metal:content-core fill-slot="content-core">
+    <tal:template-list tal:define="templates view/templates">
+      <p>We offer a number of templates for purchase.  All prices are per-month</p>
+      <h2>Available Templates:</h2>
+      <form action="#"
+            method="post"
+            tal:attributes="action string:${context/absolute_url}/@@pay2plone">
+        <input type="hidden" name="form.submitted:boolean" value="True"/>
+        <div tal:repeat="template templates">
+         <tal:template-vals tal:define="id template/id;
+                                        btn_name view/buy_button_name">
+          <h3 tal:content="template/name">[Template Name]</h3>
+          <p tal:content="template/description">[Template Description]</p>
+          <p>
+            <strong>Price:</strong>
+            <span tal:replace="template/price_label">[$0.00]</span>
+          </p>
+          <button type="submit" tal:attributes="name btn_name;
+                                                value id">Buy Now w/ PayPal
+          </button>
+         </tal:template-vals>
+        </div>
+      </form>
+    </tal:template-list>
+  </metal:content-core>
+  
   </body>
 </html>
