@@ -1,0 +1,17 @@
+* change storage for individual site records to a PersistentMapping so we can
+  key with site ids
+
+* complete creating a new site record at successful payment time.
+
+* add permission granted to members and admins that controls access to
+  pay2plone views (base, confirm, cancel, etc)  This will ensure that users
+  reaching these views are members with ids and all needed to create new site
+  records.
+
+* create view that escalates user's privileges to manager if and only if a
+  site record exists with a successful payment record the above-defined
+  privilege, forward to this view and escalate only if site record with
+  successful payment exists
+
+* create form on this view that allows user to select a nice site id, model on
+  the existing admin addsite view.
