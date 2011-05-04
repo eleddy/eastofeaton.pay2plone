@@ -1,11 +1,14 @@
 from zope.interface import Interface
 from zope.container.interfaces import IOrderedContainer
 from zope.container.constraints import contains
+from zope.schema import Bool
 from zope.schema import TextLine
 from zope.schema import Text
 from zope.schema import Decimal
 from zope.schema import FrozenSet
 from zope.schema import Choice
+from zope.schema import Datetime
+from zope.schema import Timedelta
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 
@@ -37,6 +40,16 @@ class ISiteTemplate(Interface):
                          default=frozenset(['foo',]))
 
 
+class ISiteRecord(Interface):
+    """ describes a record of a site purchase
+    """
+    id = TextLine(title=u'Site ID')
+    purchased = Datetime(title=u'Initial purchase date')
+    paid = Datetime(title=u'Last payment date')
+    term = Timedelta(title=u'Purchase duration')
+    created = Bool(title=u'Site has been created')
+
+
 class ISiteTemplateRegistry(IOrderedContainer):
     """ registry for site templates
     """
@@ -62,3 +75,13 @@ class ISiteTemplateRegistry(IOrderedContainer):
 class IPay2PloneUtility(Interface):
     """ contract interface for the pay2plone utility
     """
+
+    def get_user_record(member_id):
+        """ return existing, or create and return new user record for member_id
+        """
+
+class ITemplateListingPage(Interface):
+    
+    def templates():
+        """ provides a list of the templates available in this site
+        """

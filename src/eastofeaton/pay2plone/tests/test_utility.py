@@ -22,15 +22,15 @@ class TestPay2PlayUtility(unittest.TestCase):
         self.portal = self.layer['portal']
         self.utility = queryUtility(IPay2PloneUtility)
 
-    # def test_utility_implements_interface(self):
-    #     """ verify that the utility implements the interface it should
-    #     """
-    #     try:
-    #         self.assertTrue(verifyObject(IPay2PloneUtility, self.utility))
-    #     except DoesNotImplement, e:
-    #         self.fail("Interface not implemented by utility: %s" % str(e))
-    #     except BrokenImplementation, e:
-    #         self.fail("utility is missing a member: %s" % str(e))
-    #     except BrokenMethodImplementation, e:
-    #         msg = "there is a problem with the implementation of a method: %s"
-    #         self.fail(msg % str(e))
+    def test_utility_implements_interface(self):
+        """ verify that the utility implements the interface it should
+        """
+        try:
+            self.assertTrue(verifyObject(IPay2PloneUtility, self.utility))
+        except DoesNotImplement, e:
+            self.fail("Interface not implemented by utility: %s" % str(e))
+        except BrokenImplementation, e:
+            self.fail("utility is missing a member: %s" % str(e))
+        except BrokenMethodImplementation, e:
+            msg = "there is a problem with the implementation of a method: %s"
+            self.fail(msg % str(e))
