@@ -11,12 +11,21 @@
       permission="zope2.View"
       />
   
-  <!-- back from paypal, success or failure -->
+  <!-- back from paypal to confirm -->
   <browser:page
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-      name="pay2plone_callback"
-      class="eastofeaton.pay2plone.browser.callback.PaymentCallback"
-      template="payment_callback.pt"
+      name="pay2plone_confirm"
+      class="eastofeaton.pay2plone.browser.callback.PaymentConfirm"
+      template="payment_confirm.pt"
+      permission="zope2.View"
+      />
+  
+  <!-- back froom paypal, cancel -->
+  <browser:page
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      name="pay2plone_cancel"
+      class="eastofeaton.pay2plone.browser.callback.PaymentCancel"
+      template="payment_cancel.pt"
       permission="zope2.View"
       />
   

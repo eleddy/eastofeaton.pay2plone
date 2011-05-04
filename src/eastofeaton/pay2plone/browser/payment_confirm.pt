@@ -20,7 +20,7 @@
   <metal:content-title fill-slot="content-title">
       <h1 class="documentFirstHeading"> 
         <span tal:replace="view/view_title">
-          [Listing Page Title]
+          [Confirm Page Title]
         </span>
       </h1>        
   </metal:content-title>
@@ -28,10 +28,48 @@
   <metal:content-description fill-slot="content-description">
       <div class="documentDescription">
         <span tal:replace="view/view_description">
-          [Listing Page Description]
+          [Confirm Page Description]
         </span>
       </div>
   </metal:content-description>
+  
+  <metal:content-core fill-slot="content-core">
+  <div id="pay2plone_confirm" tal:condition="view/render_confirmation_form">
+    <h2>Confirm Purchase</h2>
+    <p>We are ready to finalize your purchase.  Please review the details 
+       below. If everything is correct, press 'Confirm' to begin setting up 
+       your new plone site.</p>
+    <form action="#"
+          method="post"
+          tal:attributes="action string:${context/absolute_url}/@@pay2plone_confirm;">
+      <input type="hidden" name="form.submitted:boolean" value="True"/>
+      <input type="hidden" name="form.token" tal:attributes="value view/token"/>
+      <input type="hidden" name="form.payerid" tal:attributes="value view/payerid"/>
+      <input type="hidden" name="form.amt" tal:attributes="value view/amt"/>
+      <table class="listing">
+        <tr>
+          <th>Template Name</th>
+          <th>Template Description</th>
+          <th>Price</th>
+        </tr>
+        <tr>
+          <td tal:content="view/t_dict/name">[Name]</td>
+          <td tal:content="view/t_dict/description">[Description]</td>
+          <td tal:content="view/t_dict/price_label">[Price]</td>
+        </tr>
+      </table>
+      <input type="submit" name="form.confirm" value="Confirm"/>
+      <input type="submit" name="form.cancel" value="Cancel"/>
+    </form>
+  </div>
+  <div id="pay2plone_problem" 
+       tal:condition="not: view/render_confirmation_form">
+    <h2>There seems to be a problem</h2>
+    <p>We're sorry, something appears to have gone wrong.  Please contact
+       site administration to report the error.  You should include any 
+       information you see at the top of this page in a box marked 'error'</p>
+  </div>
+  </metal:content-core>
   
   </body>
 </html>

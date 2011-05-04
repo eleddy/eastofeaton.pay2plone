@@ -1,13 +1,8 @@
 from decimal import Decimal
 
-from zope.publisher.browser import BrowserView
-from zope.component import queryUtility
-from eastofeaton.paypal.interfaces import IPaypalAPIUtility
+from Products.statusmessages.interfaces import IStatusMessage
 
-from eastofeaton.pay2plone.interfaces import ISiteTemplateRegistry
-
-
-_marker = object()
+from eastofeaton.pay2plone.browser.base import Pay2PloneBaseView
 
 
 # reference:  http://docs.python.org/release/2.6.6/library/decimal.html#recipes
@@ -62,7 +57,7 @@ def moneyfmt(value, places=2, curr='', sep=',', dp='.',
     return ''.join(reversed(result))
 
 
-class TemplateListings(BrowserView):
+class TemplateListings(Pay2PloneBaseView):
 
     view_title = "Pay-2-Plone"
     view_description = "The easiest way to Plone"
@@ -71,10 +66,7 @@ class TemplateListings(BrowserView):
     buy_button_name = 'buypaypal'
 
     def __init__(self, context, request):
-        self.context = context
-        self.request = request
-        self.registry = queryUtility(ISiteTemplateRegistry, default=_marker)
-        self.paypal = queryUtility(IPaypalAPIUtility, default=_marker)
+        super(TemplateListings, self).__init__(context, request)
         base_url = self.context.absolute_url()
         self.return_url = base_url + self.payment_return_view
         self.cancel_url = base_url + self.payment_cancel_view
@@ -92,39 +84,37 @@ class TemplateListings(BrowserView):
                 templates.append(t_dict)
         return templates
 
-    def __call__(self):
+    def _handle_form_submission(self):
         form = self.request.form
-        if self.registry is _marker or self.paypal is _marker:
-            # we've got a problem, message the user and return the page
-            return self.index()
-        submitted = form.get('form.submitted', False)
-        if submitted:
-            template_id = form.get(self.buy_button_name, None)
-            if template_id is not None:
-                # we've  chosen to buy a site, get it
-                template = self.registry.get_template_by_id(template_id)
-                if template is not None:
-                    base_kw_string = 'paymentrequest_0_'
-                    kw = {'reqconfirmshipping': 0,
-                          'noshipping': 1,
-                          'returnurl': self.return_url,
-                          'cancelurl': self.cancel_url,
-                          base_kw_string + 'paymentaction': 'Order'}
-                    for kw_str, templ_attr in [('amt', 'price'),
-                                               ('itememt', 'price'),
-                                               ('desc', 'description')]:
-                        keyword = base_kw_string + kw_str
-                        value = getattr(template, templ_attr, None)
-                        kw[keyword] = '%s' % value
-                        if kw_str == 'amt':
-                            kw[kw_str] = '%s' % value
-                    api = self.paypal()
-                    set_ec_resp = api.set_express_checkout(**kw)
-                    if not set_ec_resp or not set_ec_resp.success:
-                        # alert user to failure, return listing page
-                        return self.index()
-                    token = set_ec_resp.token
-                    pp_url = api.generate_express_checkout_redirect_url(token)
-                    self.request.response.redirect(pp_url)
-
-        return self.index()
+        template_id = form.get(self.buy_button_name, None)
+        if template_id is not None:
+            # we've  chosen to buy a site, get it
+            template = self.registry.get_template_by_id(template_id)
+            if template is not None:
+                # base_kw_string = 'paymentrequest_0_'
+                kw = {'reqconfirmshipping': 0,
+                      'noshipping': 1,
+                      'returnurl': self.return_url,
+                      'cancelurl': self.cancel_url,
+                      'paymentaction': 'Order'}
+                for kw_str, templ_attr in [('amt', 'price'),
+                                           ('itememt', 'price'),
+                                           ('desc', 'description'),
+                                           ('custom', 'id')]:
+                    # keyword = base_kw_string + kw_str
+                    value = getattr(template, templ_attr, None)
+                    kw[kw_str] = value
+                    # kw[keyword] = '%s' % value
+                    # if kw_str == 'amt':
+                        # kw[kw_str] = '%s' % value
+                api = self.paypal()
+                set_ec_resp = api.set_express_checkout(**kw)
+                if not set_ec_resp or not set_ec_resp.success:
+                    msg = "We've had a problem reaching paypal, please try "
+                    msg += "again later."
+                    IStatusMessage(self.request).add(msg, type=u'error')
+                    return self.index()
+                token = set_ec_resp.token
+                pp_url = api.generate_express_checkout_redirect_url(token)
+                ## TODO: use p2p_utility to set up provisional site purchase
+                self.request.response.redirect(pp_url)
