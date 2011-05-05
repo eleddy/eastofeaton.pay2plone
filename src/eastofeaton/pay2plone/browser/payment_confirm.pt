@@ -46,6 +46,7 @@
       <input type="hidden" name="form.token" tal:attributes="value view/token"/>
       <input type="hidden" name="form.payerid" tal:attributes="value view/payerid"/>
       <input type="hidden" name="form.amt" tal:attributes="value view/amt"/>
+      <input type="hidden" name="form.template_id" tal:attributes="value view/t_dict/id">
       <table class="listing">
         <tr>
           <th>Template Name</th>

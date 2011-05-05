@@ -1,16 +1,31 @@
 import decimal
 
+from Products.CMFCore.utils import getToolByName
 from Products.statusmessages.interfaces import IStatusMessage
 from paypal.exceptions import PayPalAPIResponseError
 
 from eastofeaton.pay2plone.browser.base import Pay2PloneBaseView
 from eastofeaton.pay2plone.browser.listing import moneyfmt
+from eastofeaton.pay2plone.siterecord import SiteRecord
 
 class PaymentConfirm(Pay2PloneBaseView):
 
     view_title = "Welcome Back"
     view_description = "Pay2Plone, the easiest way to Plone"
     render_confirmation_form = True
+
+    def __init__(self, context, request):
+        super(PaymentConfirm, self).__init__(context, request)
+        self.mtool = getToolByName(self.context, 'portal_membership')
+
+    def _create_site_record(self, template_id):
+        if self.mtool.isAnonymousUser():
+            raise ValueError('unable to create sites for anonymous user')
+        member_id = self.mtool.getAuthenticatedMember().id
+        site_record = SiteRecord(member_id, template_id)
+        user_record = self.p2p_utility.get_user_record(member_id)
+        record_id = user_record.add_site_record(site_record)
+        return record_id
 
     def _handle_form_submission(self):
         """ handle confirmation of payment
@@ -36,8 +51,19 @@ class PaymentConfirm(Pay2PloneBaseView):
         token = self.request.get('form.token')
         payerid = self.request.get('form.payerid')
         amt = self.request.get('form.amt')
-        if token is None or payerid is None or amt is None:
+        template_id = self.request.get('form.template_id')
+        if token is None or payerid is None or \
+            amt is None or template_id is None:
             msg = u'Unable to complete transaction, required data not found'
+            status_messages.add(msg, type=u'error')
+            return self.index()
+
+        try:
+            record_id = self._create_site_record(template_id)
+        except ValueError, e:
+            # for some reason, the name of this user is no good, report and
+            # fail
+            msg = u'Unable to complete transaction, %s' % str(e)
             status_messages.add(msg, type=u'error')
             return self.index()
 
@@ -50,17 +76,22 @@ class PaymentConfirm(Pay2PloneBaseView):
             status_messages.add(msg, type=u'error')
             return self.index()
         
-        if pay_resp.paymentstatus.lower() in ['completed', 'processed']:
-            # payment good, move on
-            pass
-        elif pay_resp.paymentstatus.lower() in ['pending']:
-            # payment pending, move on with notification to site owner
-            pass
-        else:
+        if pay_resp.paymentstatus.lower() not in ['completed',
+                                                  'processed',
+                                                  'pending']:
             # payment failed for some reason, report to user
             msg = u'Unable to complete request.  Payment was denied'
             status_messages.add(msg, type='warning')
-            
+            return self.index()
+
+        if pay_resp.paymentstatus.lower() in ['pending']:
+            # payment pending, move on with notification to site owner
+            print 'I should send an email to the administrator here'
+        
+        member_id = self.mtool.getAuthenticatedMember().id
+        user_record = self.p2p_utility.get_user_record(member_id)
+        site_record = user_record.get_site_record(record_id)
+        site_record.mark_paid(pay_resp.transactionid)
         print 'payment done'
 
     def _handle_initial_pageload(self):
@@ -115,19 +146,12 @@ class PaymentConfirm(Pay2PloneBaseView):
 
 
 class PaymentCancel(Pay2PloneBaseView):
-    
-    view_title = "Welcome Back"
-    view_description = "Pay2Plone, the easiest way to Plone"
-
-    def _handle_form_submission(self):
-        """ handle confirmation of payment
-        """
-        print 'cancel, already'
-        ## TODO: message user about having cancelled, 
-        # redirect back to main site root.  We're done.
 
     def _handle_initial_pageload(self):
         ## TODO: do we need to call paypal api to cancel?
         # provide user with feedback about cancelling, chance to send a
         # message to us?
-        pass
+        import pdb; pdb.set_trace( )
+        view = "/@@pay2plone"
+        url = self.context.absolute_url() + view
+        self.request.response.redirect(url)

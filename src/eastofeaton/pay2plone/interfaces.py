@@ -1,5 +1,6 @@
 from zope.interface import Interface
 from zope.container.interfaces import IOrderedContainer
+from zope.container.interfaces import IContainerNamesContainer
 from zope.container.constraints import contains
 from zope.schema import Bool
 from zope.schema import TextLine
@@ -44,10 +45,25 @@ class ISiteRecord(Interface):
     """ describes a record of a site purchase
     """
     id = TextLine(title=u'Site ID')
+    template = TextLine(title=u'Template ID used to create this site')
     purchased = Datetime(title=u'Initial purchase date')
     paid = Datetime(title=u'Last payment date')
+    transaction_id = TextLine(title=u'Most recent transaction id')
+    payment_agent = TextLine(title=u'Payment system used')
     term = Timedelta(title=u'Purchase duration')
     created = Bool(title=u'Site has been created')
+    
+    def mark_paid():
+        """ record datetime.datetime.utcnow as most recent payment datetime
+        """
+
+    def mark_created():
+        """ record that this site has been created
+        """
+
+    def is_expired():
+        """ return true if the expiration date for this site has passed
+        """
 
 
 class ISiteTemplateRegistry(IOrderedContainer):
@@ -72,13 +88,33 @@ class ISiteTemplateRegistry(IOrderedContainer):
         """
 
 
-class IPay2PloneUtility(Interface):
+class IPay2PloneUtility(IOrderedContainer):
     """ contract interface for the pay2plone utility
     """
+    contains("eastofeaton.pay2plone.interfaces.IPay2PloneUserRecord")
 
     def get_user_record(member_id):
         """ return existing, or create and return new user record for member_id
         """
+
+
+class IPay2PloneUserRecord(IOrderedContainer, IContainerNamesContainer):
+    """ record of sites purchased by a user
+    """
+    contains("eastofeaton.pay2plone.interfaces.ISiteRecord")
+
+    def add_site_record(site_record):
+        """ insert the site_record into the user record, create new id for it
+        """
+
+    def get_site_record(id):
+        """ return the site record at 'id'
+        """
+
+    def delete_site_record(id):
+        """ remove the site record at 'id'
+        """
+
 
 class ITemplateListingPage(Interface):
     

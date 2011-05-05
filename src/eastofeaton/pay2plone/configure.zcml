@@ -7,7 +7,7 @@
     i18n_domain="eastofeaton.pay2plone">
 
   <!-- <five:registerPackage package="." initialize=".initialize" /> -->
-  
+  <include file="permissions.zcml" />
   <include package=".browser" />
   <include package=".exportimport" />
 
@@ -25,6 +25,14 @@
       directory="profiles/sample"
       description="Provides some sample stuff for purposes of contruction"
       provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+      
+  <!-- Register a name chooser explicitly -->
+
+  <adapter
+      provides="zope.container.interfaces.INameChooser"
+      for="eastofeaton.pay2plone.interfaces.IPay2PloneUserRecord"
+      factory=".utility.SiteRecordNameChooser"
       />
 
 </configure>

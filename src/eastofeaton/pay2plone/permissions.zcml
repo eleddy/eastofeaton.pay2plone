@@ -1,0 +1,11 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+  
+  <permission id="eastofeaton.pay2plone.canpay"
+              title="Pay2Plone: Can pay">
+    <role name="Manager"/>
+    <role name="Site Administrator"/>
+    <role name="Member"/>
+  </permission>
+
+</configure>
