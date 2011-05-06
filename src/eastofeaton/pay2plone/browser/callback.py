@@ -8,6 +8,14 @@ from eastofeaton.pay2plone.browser.base import Pay2PloneBaseView
 from eastofeaton.pay2plone.browser.listing import moneyfmt
 from eastofeaton.pay2plone.siterecord import SiteRecord
 
+
+def addSite(p2psite, site_record):
+    """ create a new plone site, given the starting pay2plone site and a 
+        site_record
+    """
+    
+
+
 class PaymentConfirm(Pay2PloneBaseView):
 
     view_title = "Welcome Back"
@@ -17,6 +25,11 @@ class PaymentConfirm(Pay2PloneBaseView):
     def __init__(self, context, request):
         super(PaymentConfirm, self).__init__(context, request)
         self.mtool = getToolByName(self.context, 'portal_membership')
+
+    def _add_plone_site(self, record_id):
+        """ provided with a site_record id, create a new site 
+            if it hasn't already been created
+        """
 
     def _create_site_record(self, template_id):
         if self.mtool.isAnonymousUser():
@@ -34,7 +47,6 @@ class PaymentConfirm(Pay2PloneBaseView):
         status_messages = IStatusMessage(self.request)
         ## TODO: call do_express_checkout, mark site purchase as complete
         # then redirect to the addsite method at the zope root
-        import pdb; pdb.set_trace( )
         if not self.request.get('form.confirm'):
             if self.request.get('form.cancel'):
                 # the user cancelled, return to the pay2plone listing page
@@ -92,7 +104,9 @@ class PaymentConfirm(Pay2PloneBaseView):
         user_record = self.p2p_utility.get_user_record(member_id)
         site_record = user_record.get_site_record(record_id)
         site_record.mark_paid(pay_resp.transactionid)
-        print 'payment done'
+        newsite = self.p2p_utility.create_site_for(site_record, member_id)
+        url = newsite.absolute_url()
+        self.request.response.redirect(url)
 
     def _handle_initial_pageload(self):
         ## TODO: call get_express_checkout_details, set up confirmation form
