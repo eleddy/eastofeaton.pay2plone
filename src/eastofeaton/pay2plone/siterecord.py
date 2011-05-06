@@ -33,4 +33,4 @@ class SiteRecord(Persistent):
             return True
         else:
             expire_date = self.paid + self.term
-            return expire_date > datetime.datetime.utcnow()
+            return expire_date < datetime.datetime.utcnow()
