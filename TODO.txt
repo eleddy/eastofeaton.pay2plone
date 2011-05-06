@@ -1,17 +1,19 @@
-[ ] change storage for individual site records to a PersistentMapping so we
-can key with site ids
-
-[ ] complete creating a new site record at successful payment time.
-
-[X] add permission granted to members and admins that controls access to
-pay2plone views (base, confirm, cancel, etc) This will ensure that users
-reaching these views are members with ids and all needed to create new site
-records.
-
-[ ] create view that escalates user's privileges to manager if and only if a
-site record exists with a successful payment record the above-defined
-privilege, forward to this view and escalate only if site record with
-successful payment exists
-
 [ ] create form on this view that allows user to select a nice site id, model
 on the existing admin addsite view.
+
+[ ] copy user property sheet from old site to new, so they get email and
+fullname, etc
+
+[ ] figure out how to prevent installation of other add-ons in new site,
+including our own, without crippling user. Can we just give the 'Site
+Administrator' role to new site owner?
+
+[ ] login user automagically on redirect to new site, so they don't have to do
+it themselves
+
+[ ] forward user to site admin, site control panel so they can complete set up
+
+[ ] provide management tools to review what sites exist and when and how they 
+were created.
+
+[ ] link created site to site_record somehow.  (store new site url??)

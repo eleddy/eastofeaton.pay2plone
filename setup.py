@@ -35,6 +35,7 @@ setup(name='eastofeaton.pay2plone',
       install_requires=[
           'setuptools',
           # -*- Extra requirements: -*-
+          'eastofeaton.paypal',
       ],
       extras_require={'test': ['plone.app.testing']},
       entry_points="""
